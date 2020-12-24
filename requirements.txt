@@ -1,3 +1,4 @@
 python-dotenv==0.15.0
 python-telegram-bot==11.1.0
 requests==2.25.1
+google-cloud-dialogflow==2.0.0

@@ -25,12 +25,31 @@ def help(bot, update):
 
 def echo(bot, update):
     """Echo the user message."""
-    update.message.reply_text(update.message.text)
+    project_id = os.getenv("PROJECT_ID")
+    session_id = os.getenv("SESSION_ID")
+    text = detect_intent_texts(project_id, session_id, update.message.text, 'ru-RU')
+    bot.send_message(chat_id=update.message.chat_id, text=text)
 
 
 def error(bot, update, error):
     """Log Errors caused by Updates."""
     logger.warning('Update "%s" caused error "%s"', update, error)
+
+
+def detect_intent_texts(project_id, session_id, text, language_code):
+    from google.cloud import dialogflow
+
+    session_client = dialogflow.SessionsClient()
+    session = session_client.session_path(project_id, session_id)
+
+    text_input = dialogflow.TextInput(
+        text=text, language_code=language_code)
+
+    query_input = dialogflow.QueryInput(text=text_input)
+
+    response = session_client.detect_intent(
+        session=session, query_input=query_input)
+    return response.query_result.fulfillment_text
 
 
 def main():
