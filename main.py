@@ -1,7 +1,8 @@
 import os
-from dotenv import load_dotenv
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 import logging
+from dotenv import load_dotenv
+from google.cloud import dialogflow
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 
 # Enable logging
 logging.basicConfig(
@@ -23,8 +24,7 @@ def help(bot, update):
     update.message.reply_text('Help!')
 
 
-def echo(bot, update):
-    """Echo the user message."""
+def answer(bot, update):
     project_id = os.getenv("PROJECT_ID")
     session_id = os.getenv("SESSION_ID")
     text = detect_intent_texts(project_id, session_id, update.message.text, 'ru-RU')
@@ -37,18 +37,13 @@ def error(bot, update, error):
 
 
 def detect_intent_texts(project_id, session_id, text, language_code):
-    from google.cloud import dialogflow
-
     session_client = dialogflow.SessionsClient()
     session = session_client.session_path(project_id, session_id)
-
-    text_input = dialogflow.TextInput(
-        text=text, language_code=language_code)
-
+    text_input = dialogflow.TextInput(text=text, language_code=language_code)
     query_input = dialogflow.QueryInput(text=text_input)
-
     response = session_client.detect_intent(
         session=session, query_input=query_input)
+
     return response.query_result.fulfillment_text
 
 
@@ -66,7 +61,7 @@ def main():
     dp.add_handler(CommandHandler("help", help))
 
     # on noncommand i.e message - echo the message on Telegram
-    dp.add_handler(MessageHandler(Filters.text, echo))
+    dp.add_handler(MessageHandler(Filters.text, answer))
 
     # log all errors
     dp.add_error_handler(error)
