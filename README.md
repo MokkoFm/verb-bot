@@ -50,6 +50,8 @@ Add file `.env` with variables:
 - `python tg_bot.py` 
 - `python vk_bot.py` 
 
-### Purpose
+### How it works
 
-Code was written for learning purpose as a part of course for web-developers [dvmn.org](https://dvmn.org/).
+Telegram
+
+![screenshot](tg_bot.gif)
