@@ -52,7 +52,7 @@ def main():
     load_dotenv()
     """Start the bot."""
     # Create the EventHandler and pass it your bot's token.
-    updater = Updater(os.getenv("BOT_TOKEN"))
+    updater = Updater(os.getenv("TG_BOT_TOKEN"))
 
     # Get the dispatcher to register handlers
     dp = updater.dispatcher
