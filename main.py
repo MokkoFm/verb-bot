@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 from google.cloud import dialogflow
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 
+
 # Enable logging
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',

@@ -10,8 +10,6 @@ def main():
     with open("questions.json", "r", encoding="UTF-8") as file:
         questions = json.load(file)
 
-    #job_questions = questions['Устройство на работу']['questions']
-
     for key, value in questions.items():
         training_phrases = [{"text": question} for question in value['questions']]
         project_id = os.getenv('PROJECT_ID')
