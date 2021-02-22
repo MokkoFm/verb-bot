@@ -3,25 +3,29 @@ import vk_api as vk
 import random
 from dotenv import load_dotenv
 from vk_api.longpoll import VkLongPoll, VkEventType
+from google.cloud import dialogflow
 
 
-def echo(event, vk_api):
+def answer(event, vk_api):
+    project_id = os.getenv("PROJECT_ID")
+    session_id = os.getenv("SESSION_ID")
+    text = detect_intent_texts(project_id, session_id, event.text, 'ru-RU')
     vk_api.messages.send(
         user_id=event.user_id,
-        message=event.text,
+        message=text,
         random_id=random.randint(1, 1000)
     )
 
 
-def send_vk_message(longpoll):
-    for event in longpoll.listen():
-        if event.type == VkEventType.MESSAGE_NEW:
-            print('Новое сообщение:')
-        if event.to_me:
-            print('Для меня от: ', event.user_id)
-        else:
-            print('От меня для: ', event.user_id)
-        print('Текст:', 'И тебе привет')
+def detect_intent_texts(project_id, session_id, text, language_code):
+    session_client = dialogflow.SessionsClient()
+    session = session_client.session_path(project_id, session_id)
+    text_input = dialogflow.TextInput(text=text, language_code=language_code)
+    query_input = dialogflow.QueryInput(text=text_input)
+    response = session_client.detect_intent(
+        session=session, query_input=query_input)
+
+    return response.query_result.fulfillment_text
 
 
 def main():
@@ -29,10 +33,9 @@ def main():
     vk_session = vk.VkApi(token=os.getenv("VK_TOKEN"))
     vk_api = vk_session.get_api()
     longpoll = VkLongPoll(vk_session)
-    #send_vk_message(longpoll)
     for event in longpoll.listen():
         if event.type == VkEventType.MESSAGE_NEW and event.to_me:
-            echo(event, vk_api)
+            answer(event, vk_api)
 
 
 if __name__ == '__main__':
