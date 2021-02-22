@@ -1,4 +1,4 @@
-# Devman bot - Notifications
+# Chatbots with DialogFlow
 
 It has scripts to use chatbots in Telegram or VK. Also you'll find a script to create intent at DialogFlow.
 
