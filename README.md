@@ -28,6 +28,7 @@ Add file `.env` with variables:
 - `PROJECT_ID` - you can find it as `project_id` in JSON-key 
 - `SESSION_ID` - you can find it as `client_id` in JSON-key 
 - `GOOGLE_APPLICATION_CREDENTIALS` - path to your file with JSON-key
+- `TG_USER_ID` - add id of your telegram account for logs 
 
 ### How to use script create_intent 
 
