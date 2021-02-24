@@ -3,26 +3,27 @@ import logging
 from dotenv import load_dotenv
 from google.cloud import dialogflow
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
+from telegram import Bot
 
 
-# Enable logging
-logging.basicConfig(
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    level=logging.INFO)
-
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('chatbots-logger')
 
 
-# Define a few command handlers. These usually take the two arguments bot and
-# update. Error handlers also receive the raised TelegramError object in error.
+class TelegramLogsHandler(logging.Handler):
+
+    def __init__(self, tg_bot, chat_id):
+        super().__init__()
+        self.chat_id = chat_id
+        self.tg_bot = tg_bot
+
+    def emit(self, record):
+        log_entry = self.format(record)
+        self.tg_bot.send_message(chat_id=self.chat_id, text=log_entry)
+
+
 def start(bot, update):
     """Send a message when the command /start is issued."""
-    update.message.reply_text('Hi!')
-
-
-def help(bot, update):
-    """Send a message when the command /help is issued."""
-    update.message.reply_text('Help!')
+    update.message.reply_text('Hi! Chatbot is activated!')
 
 
 def answer(bot, update):
@@ -30,11 +31,6 @@ def answer(bot, update):
     session_id = os.getenv("SESSION_ID")
     text = detect_intent_texts(project_id, session_id, update.message.text, 'ru-RU')
     bot.send_message(chat_id=update.message.chat_id, text=text)
-
-
-def error(bot, update, error):
-    """Log Errors caused by Updates."""
-    logger.warning('Update "%s" caused error "%s"', update, error)
 
 
 def detect_intent_texts(project_id, session_id, text, language_code):
@@ -52,20 +48,21 @@ def main():
     load_dotenv()
     """Start the bot."""
     # Create the EventHandler and pass it your bot's token.
-    updater = Updater(os.getenv("TG_BOT_TOKEN"))
-
+    tg_token = os.getenv("TG_BOT_TOKEN")
+    tg_user_id = os.getenv("TG_USER_ID")
+    tg_bot = Bot(tg_token)
+    logger = logging.getLogger('chatbots-logger')
+    logger.setLevel(logging.INFO)
+    logger.addHandler(TelegramLogsHandler(tg_bot, tg_user_id))
+    updater = Updater(tg_token)
     # Get the dispatcher to register handlers
     dp = updater.dispatcher
 
     # on different commands - answer in Telegram
     dp.add_handler(CommandHandler("start", start))
-    dp.add_handler(CommandHandler("help", help))
 
     # on noncommand i.e message - echo the message on Telegram
     dp.add_handler(MessageHandler(Filters.text, answer))
-
-    # log all errors
-    dp.add_error_handler(error)
 
     # Start the Bot
     updater.start_polling()
