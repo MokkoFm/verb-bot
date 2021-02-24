@@ -1,9 +1,15 @@
 import os
 import vk_api as vk
 import random
+import logging
 from dotenv import load_dotenv
 from vk_api.longpoll import VkLongPoll, VkEventType
 from google.cloud import dialogflow
+from tg_bot import TelegramLogsHandler
+from telegram import Bot
+
+
+logger = logging.getLogger('chatbots-logger')
 
 
 def answer(event, vk_api):
@@ -31,6 +37,13 @@ def detect_intent_texts(project_id, session_id, text, language_code):
 
 def main():
     load_dotenv()
+    tg_token = os.getenv("TG_BOT_TOKEN")
+    tg_user_id = os.getenv("TG_USER_ID")
+    tg_bot = Bot(tg_token)
+    logger = logging.getLogger('chatbots-logger')
+    logger.setLevel(logging.INFO)
+    logger.addHandler(TelegramLogsHandler(tg_bot, tg_user_id))
+
     vk_session = vk.VkApi(token=os.getenv("VK_TOKEN"))
     vk_api = vk_session.get_api()
     longpoll = VkLongPoll(vk_session)
