@@ -9,17 +9,17 @@ def main():
     with open("questions.json", "r", encoding="UTF-8") as file:
         questions = json.load(file)
 
-    for key, value in questions.items():
-        training_phrases = [{"text": question} for question in value['questions']]
+    for topic, questions in questions.items():
+        training_phrases = [{"text": question} for question in questions['questions']]
         project_id = os.getenv('PROJECT_ID')
 
         client = dialogflow_v2.IntentsClient()
         parent = client.project_agent_path(project_id)
         intent = {
-            "display_name": key,
+            "display_name": topic,
             "messages": [{
                 "text":
-                {"text": [value['answer']]}
+                {"text": [questions['answer']]}
             }],
             "training_phrases": [
                 {
