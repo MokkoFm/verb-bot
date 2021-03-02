@@ -4,9 +4,9 @@ import random
 import logging
 from dotenv import load_dotenv
 from vk_api.longpoll import VkLongPoll, VkEventType
-from google.cloud import dialogflow
 from logs_handler import TelegramLogsHandler
 from telegram import Bot
+from detect_intent import detect_intent_texts
 
 
 logger = logging.getLogger('chatbots-logger')
@@ -15,24 +15,14 @@ logger = logging.getLogger('chatbots-logger')
 def answer(event, vk_api):
     project_id = os.getenv("PROJECT_ID")
     session_id = os.getenv("SESSION_ID")
-    text, response = detect_intent_texts(
+    intent = detect_intent_texts(
         project_id, session_id, event.text, 'ru-RU')
-    if not response.query_result.intent.is_fallback:
+    if not intent.intent.is_fallback:
         vk_api.messages.send(
             user_id=event.user_id,
-            message=text,
+            message=intent.fulfillment_text,
             random_id=random.randint(1, 1000)
         )
-
-
-def detect_intent_texts(project_id, session_id, text, language_code):
-    session_client = dialogflow.SessionsClient()
-    session = session_client.session_path(project_id, session_id)
-    text_input = dialogflow.TextInput(text=text, language_code=language_code)
-    query_input = dialogflow.QueryInput(text=text_input)
-    response = session_client.detect_intent(
-        session=session, query_input=query_input)
-    return response.query_result.fulfillment_text, response
 
 
 def main():
