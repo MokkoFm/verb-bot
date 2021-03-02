@@ -55,7 +55,7 @@ Add file `.env` with variables:
 
 Telegram
 
-![screenshot](tg_bot.gif)
+![screenshot](media/tg_bot.gif)
 
 Also you can write for these chatbots:
 - `VK` - [write message](https://vk.com/im?media=&sel=-198809484) 
