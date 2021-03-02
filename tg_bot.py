@@ -11,7 +11,6 @@ logger = logging.getLogger('chatbots-logger')
 
 
 def start(bot, update):
-    """Send a message when the command /start is issued."""
     update.message.reply_text('Hi! Chatbot is activated!')
 
 
@@ -35,8 +34,6 @@ def detect_intent_texts(project_id, session_id, text, language_code):
 
 def main():
     load_dotenv()
-    """Start the bot."""
-    # Create the EventHandler and pass it your bot's token.
     tg_token = os.getenv("TG_BOT_TOKEN")
     tg_user_id = os.getenv("TG_USER_ID")
     tg_bot = Bot(tg_token)
@@ -44,21 +41,11 @@ def main():
     logger.setLevel(logging.INFO)
     logger.addHandler(TelegramLogsHandler(tg_bot, tg_user_id))
     updater = Updater(tg_token)
-    # Get the dispatcher to register handlers
+
     dp = updater.dispatcher
-
-    # on different commands - answer in Telegram
     dp.add_handler(CommandHandler("start", start))
-
-    # on noncommand i.e message - echo the message on Telegram
     dp.add_handler(MessageHandler(Filters.text, answer))
-
-    # Start the Bot
     updater.start_polling()
-
-    # Run the bot until you press Ctrl-C or the process receives SIGINT,
-    # SIGTERM or SIGABRT. This should be used most of the time, since
-    # start_polling() is non-blocking and will stop the bot gracefully.
     updater.idle()
 
 
