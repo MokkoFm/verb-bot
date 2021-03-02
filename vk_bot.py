@@ -14,7 +14,7 @@ logger = logging.getLogger('chatbots-logger')
 
 def answer(event, vk_api):
     project_id = os.getenv("PROJECT_ID")
-    session_id = os.getenv("SESSION_ID")
+    session_id = f'vk-{event.user_id}'
     intent = detect_intent_texts(
         project_id, session_id, event.text, 'ru-RU')
     if not intent.intent.is_fallback:

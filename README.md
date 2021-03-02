@@ -25,8 +25,7 @@ Before using scripts you should register yourself at Google Cloud. After that:
 Add file `.env` with variables: 
 - `TG_BOT_TOKEN` - token of your telegram bot. 
 - `VK_TOKEN` - token of your VK bot. 
-- `PROJECT_ID` - you can find it as `project_id` in JSON-key 
-- `SESSION_ID` - you can find it as `client_id` in JSON-key 
+- `PROJECT_ID` - you can find it as `project_id` in JSON-key
 - `GOOGLE_APPLICATION_CREDENTIALS` - path to your file with JSON-key
 - `TG_USER_ID` - add id of your telegram account for logs 
 

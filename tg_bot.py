@@ -16,9 +16,11 @@ def start(bot, update):
 
 def answer(bot, update):
     project_id = os.getenv("PROJECT_ID")
-    session_id = os.getenv("SESSION_ID")
-    intent = detect_intent_texts(project_id, session_id, update.message.text, 'ru-RU')
-    bot.send_message(chat_id=update.message.chat_id, text=intent.fulfillment_text)
+    session_id = f'tg-{update.message.chat_id}'
+    intent = detect_intent_texts(
+        project_id, session_id, update.message.text, 'ru-RU')
+    bot.send_message(
+        chat_id=update.message.chat_id, text=intent.fulfillment_text)
 
 
 def main():
