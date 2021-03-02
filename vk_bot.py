@@ -5,7 +5,7 @@ import logging
 from dotenv import load_dotenv
 from vk_api.longpoll import VkLongPoll, VkEventType
 from google.cloud import dialogflow
-from tg_bot import TelegramLogsHandler
+from logs_handler import TelegramLogsHandler
 from telegram import Bot
 
 
