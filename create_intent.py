@@ -6,7 +6,6 @@ from dotenv import load_dotenv
 
 def main():
     load_dotenv()
-    os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = os.getenv("GOOGLE_APPLICATION_CREDENTIALS")
     with open("questions.json", "r", encoding="UTF-8") as file:
         questions = json.load(file)
 
